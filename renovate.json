@@ -1,6 +1,33 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ]
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:recommended"],
+	"rangeStrategy": "bump",
+	"labels": ["Type: Dependencies"],
+	"prHourlyLimit": 5,
+	"packageRules": [
+		{
+			"matchManagers": ["npm"],
+			"addLabels": ["javascript"]
+		},
+		{
+			"matchManagers": ["npm"],
+			"matchUpdateTypes": ["patch"],
+			"groupName": "npm patch updates",
+			"groupSlug": "npm-patch"
+		},
+		{
+			"matchManagers": ["github-actions"],
+			"addLabels": ["github_actions"]
+		},
+		{
+			"matchManagers": ["github-actions"],
+			"matchUpdateTypes": ["patch"],
+			"groupName": "github-actions patch updates",
+			"groupSlug": "gha-patch"
+		}
+	],
+	"vulnerabilityAlerts": {
+		"enabled": true,
+		"addLabels": ["Type: Security"]
+	}
 }
