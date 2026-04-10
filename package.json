@@ -24,7 +24,7 @@
 		"@types/node": "^22.19.17",
 		"eslint": "^9.39.4",
 		"eslint-config-neon": "^0.2.7",
-		"eslint-formatter-compact": "^8.40.0",
+		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.0.0",
 		"husky": "^9.1.7",
 		"lint-staged": "^16.4.0",
