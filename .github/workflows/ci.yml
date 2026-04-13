@@ -1,21 +1,13 @@
-name: Lint Check and Build
+name: CI
 
 on:
   push:
     branches: ['main']
-    paths:
-      - 'src/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
   pull_request:
     branches: ['main']
-    paths:
-      - 'src/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
 
 jobs:
-  lint_build:
+  ci:
     name: lint and build
     runs-on: ubuntu-latest
     steps:
