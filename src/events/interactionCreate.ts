@@ -1,3 +1,4 @@
+import process from 'node:process';
 import { Events } from 'discord.js';
 import { loadCommands } from '../util/loaders.js';
 import type { Event } from './index.js';
@@ -12,6 +13,13 @@ export default {
 
 			if (!command) {
 				throw new Error(`Command '${interaction.commandName}' not found.`);
+			}
+
+			if (interaction.client.config.isMaintenance && interaction.user.id !== process.env.OWNER_ID) {
+				await interaction.reply(
+					`現在メンテナンス中のため、使用できません\n${interaction.client.config.maintenanceInfo}`,
+				);
+				return;
 			}
 
 			await command.execute(interaction);

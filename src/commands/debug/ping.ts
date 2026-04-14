@@ -1,4 +1,4 @@
-import type { Command } from './index.js';
+import type { Command } from '../index.js';
 
 export default {
 	data: {
@@ -6,6 +6,6 @@ export default {
 		description: 'Ping!',
 	},
 	async execute(interaction) {
-		await interaction.reply('Pong!');
+		await interaction.reply(`Pong!\nLatency is ${interaction.client.ws.ping}ms.`);
 	},
 } satisfies Command;

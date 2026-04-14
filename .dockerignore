@@ -1,0 +1,17 @@
+.git
+.github
+.husky
+.vscode
+dist
+logs
+node_modules
+.env
+.gitignore
+.lintstagedrc.json
+.prettierignore
+.prettierrc.json
+eslint.config.js
+*.md
+renovate.json
+tsconfig.eslint.json
+tsconfig.tsbuildinfo

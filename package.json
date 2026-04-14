@@ -1,21 +1,28 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "discord-tts-bot",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"private": true,
 	"type": "module",
 	"scripts": {
 		"build": "tsc",
 		"lint": "prettier --check . && eslint --ext .ts --format=pretty src",
 		"deploy": "node --env-file=.env dist/util/deploy.js",
+		"deploy:guild": "node --env-file=.env dist/util/deployGuild.js",
 		"format": "prettier --write . && eslint --ext .ts --fix --format=pretty src",
 		"start": "node --env-file=.env dist/index.js",
+		"dev": "NODE_ENV=development node --env-file=.env dist/index.js --enable-source-maps",
 		"prepare": "husky"
 	},
 	"dependencies": {
 		"@discordjs/core": "^2.4.0",
+		"@discordjs/opus": "^0.10.0",
+		"@discordjs/voice": "^0.19.2",
+		"@google-cloud/text-to-speech": "^6.4.0",
 		"bufferutil": "^4.1.0",
 		"discord.js": "^14.26.2",
+		"google-auth-library": "^10.6.2",
+		"pino": "^10.3.1",
 		"zlib-sync": "^0.1.10",
 		"zod": "^4.3.6"
 	},
@@ -33,6 +40,6 @@
 		"typescript": "~6.0.2"
 	},
 	"engines": {
-		"node": ">=24.14.1"
+		"node": ">=24.14.1 <25"
 	}
 }

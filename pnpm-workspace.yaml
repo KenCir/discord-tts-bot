@@ -1,4 +1,6 @@
 allowBuilds:
+  '@discordjs/opus': true
   bufferutil: true
+  protobufjs: true
   unrs-resolver: true
   zlib-sync: true
