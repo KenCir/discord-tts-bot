@@ -212,8 +212,5 @@ dist
 
 data/dictionary/*
 !data/dictionary/default.json
-data/exvoice/wav/*
 data/config.json
 data/voiceConnections.json
-namek-tts-bot-key-development.json
-namek-tts-bot-key-production.json
