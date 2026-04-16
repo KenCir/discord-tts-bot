@@ -28,11 +28,11 @@ export type DictionaryData = z.infer<typeof DictionaryDataSchema>;
 export class Dictionary {
 	private readonly guildId: string;
 
-	private _dictionaryData!: DictionaryData;
+	private dictionaryData: DictionaryData;
 
 	public constructor(guildId: string) {
 		this.guildId = guildId;
-		this._dictionaryData = {
+		this.dictionaryData = {
 			id: this.guildId,
 			data: {},
 		};
@@ -50,7 +50,7 @@ export class Dictionary {
 
 		const rawData = await readFile(new URL(`../../data/dictionary/${this.guildId}.json`, import.meta.url), 'utf8');
 		try {
-			this._dictionaryData = DictionaryDataSchema.parse(JSON.parse(rawData));
+			this.dictionaryData = DictionaryDataSchema.parse(JSON.parse(rawData));
 		} catch (error) {
 			throw new Error(`Failed to parse dictionary data for guild ${this.guildId}: ${error}`);
 		}
@@ -59,13 +59,13 @@ export class Dictionary {
 	public async save(): Promise<void> {
 		await writeFile(
 			new URL(`../../data/dictionary/${this.guildId}.json`, import.meta.url),
-			JSON.stringify(this._dictionaryData),
+			JSON.stringify(this.dictionaryData),
 			'utf8',
 		);
 	}
 
 	public upsert(word: string, replaceWord: string, options?: { flags?: string; isRegExp?: boolean }): void {
-		this._dictionaryData.data[word] = {
+		this.dictionaryData.data[word] = {
 			replace: replaceWord,
 			flags: options?.flags ?? 'gi',
 			isRegExp: options?.isRegExp ?? false,
@@ -73,13 +73,13 @@ export class Dictionary {
 	}
 
 	public delete(word: string): boolean {
-		if (!this._dictionaryData.data[word]) return false;
-		const { [word]: _, ...rest } = this._dictionaryData.data;
-		this._dictionaryData.data = rest;
+		if (!this.dictionaryData.data[word]) return false;
+		const { [word]: _, ...rest } = this.dictionaryData.data;
+		this.dictionaryData.data = rest;
 		return true;
 	}
 
-	public get dictionaryData(): DictionaryData {
-		return this._dictionaryData;
+	public get data(): DictionaryData {
+		return this.dictionaryData;
 	}
 }

@@ -233,12 +233,12 @@ export class VoiceConnectionManager {
 		if (!this.isReady || this.isShutdown) return false;
 
 		let replacedText = text;
-		for (const [key, value] of Object.entries(this.defaultDictionary.dictionaryData.data)) {
+		for (const [key, value] of Object.entries(this.defaultDictionary.data.data)) {
 			const regex = new RegExp(key, value.flags);
 			replacedText = replacedText.replace(regex, value.replace);
 		}
 
-		for (const [key, value] of Object.entries(this.guildDictionary.dictionaryData.data)) {
+		for (const [key, value] of Object.entries(this.guildDictionary.data.data)) {
 			if (value.isRegExp) {
 				const regex = new RegExp(key, value.flags);
 				replacedText = replacedText.replace(regex, value.replace);
