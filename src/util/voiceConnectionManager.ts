@@ -31,33 +31,33 @@ export type VoiceConnectionShutdownCode =
 	(typeof VoiceConnectionShutdownCode)[keyof typeof VoiceConnectionShutdownCode];
 
 export class VoiceConnectionManager {
-	readonly #audioPlayer: AudioPlayer;
+	private readonly audioPlayer: AudioPlayer;
 
-	#isReady: boolean = false;
+	private isReady: boolean = false;
 
-	#isShutdown: boolean = false;
+	private isShutdown: boolean = false;
 
-	#queue: AudioResource[] = [];
+	private queue: AudioResource[] = [];
 
 	/**
 	 * デフォルト辞書
 	 */
-	readonly #defaultDictionary: Dictionary;
+	private readonly defaultDictionary: Dictionary;
 
 	/**
 	 * サーバー辞書
 	 */
-	readonly #guildDictionary: Dictionary;
+	private readonly guildDictionary: Dictionary;
 
-	#textToSpeechClient: TextToSpeechClient | null = null;
+	private textToSpeechClient: TextToSpeechClient | null = null;
 
 	public constructor(
 		public readonly channel: StageChannel | VoiceChannel,
 		private isReconnect: boolean = false,
 	) {
-		this.#audioPlayer = createAudioPlayer({ debug: process.env.NODE_ENV === 'development' });
-		this.#defaultDictionary = new Dictionary('default');
-		this.#guildDictionary = new Dictionary(channel.guildId);
+		this.audioPlayer = createAudioPlayer({ debug: process.env.NODE_ENV === 'development' });
+		this.defaultDictionary = new Dictionary('default');
+		this.guildDictionary = new Dictionary(channel.guildId);
 	}
 
 	public checkJoinable(): string | null {
@@ -90,7 +90,7 @@ export class VoiceConnectionManager {
 			scopes: ['https://www.googleapis.com/auth/cloud-platform'],
 		});
 		await googleJWTClient.authorize();
-		this.#textToSpeechClient = new TextToSpeechClient({ authClient: googleJWTClient });
+		this.textToSpeechClient = new TextToSpeechClient({ authClient: googleJWTClient });
 
 		const connection = joinVoiceChannel({
 			channelId: this.channel.id,
@@ -98,14 +98,14 @@ export class VoiceConnectionManager {
 			adapterCreator: this.channel.guild.voiceAdapterCreator,
 			debug: process.env.NODE_ENV === 'development',
 		});
-		connection.subscribe(this.#audioPlayer);
+		connection.subscribe(this.audioPlayer);
 
 		connection.on('stateChange', this.onConnectionStateChange.bind(this));
 		connection.on('debug', logger.debug.bind(logger));
 		connection.on('error', this.onError.bind(this));
-		this.#audioPlayer.on(AudioPlayerStatus.Idle, this.onIdle.bind(this));
-		this.#audioPlayer.on('debug', logger.debug.bind(logger));
-		this.#audioPlayer.on('error', this.onError.bind(this));
+		this.audioPlayer.on(AudioPlayerStatus.Idle, this.onIdle.bind(this));
+		this.audioPlayer.on('debug', logger.debug.bind(logger));
+		this.audioPlayer.on('error', this.onError.bind(this));
 
 		this.channel.client.voiceConnectionManagers.set(this.channel.guildId, this);
 		logger.debug(generateDependencyReport());
@@ -117,12 +117,12 @@ export class VoiceConnectionManager {
 	}
 
 	private async onConnectionStateChange(_: VoiceConnectionState, newState: VoiceConnectionState): Promise<void> {
-		if (newState.status === VoiceConnectionStatus.Ready && !this.#isReady) {
+		if (newState.status === VoiceConnectionStatus.Ready && !this.isReady) {
 			// 先に辞書を読み込む
-			await this.#defaultDictionary.load();
-			await this.#guildDictionary.load();
+			await this.defaultDictionary.load();
+			await this.guildDictionary.load();
 
-			this.#isReady = true;
+			this.isReady = true;
 
 			if (this.isReconnect) {
 				await this.addQueueText('再接続しました。');
@@ -170,33 +170,33 @@ export class VoiceConnectionManager {
 	}
 
 	private async onIdle(): Promise<void> {
-		if (!this.#isReady) return;
+		if (!this.isReady) return;
 
-		if (this.#isShutdown) {
+		if (this.isShutdown) {
 			await this.channel.send('読み上げを終了しました');
 			this.cleanUp();
 			return;
 		}
 
-		const nextResource = this.#queue.shift();
+		const nextResource = this.queue.shift();
 		if (nextResource) {
-			this.#audioPlayer.play(nextResource);
+			this.audioPlayer.play(nextResource);
 		}
 	}
 
 	private cleanUp(): void {
 		const connection = getVoiceConnection(this.channel.guildId)!;
-		this.#queue = [];
-		this.#audioPlayer.stop();
-		this.#audioPlayer.removeAllListeners();
+		this.queue = [];
+		this.audioPlayer.stop();
+		this.audioPlayer.removeAllListeners();
 		connection.destroy();
 		connection.removeAllListeners();
 		this.channel.client.voiceConnectionManagers.delete(this.channel.guildId);
 	}
 
 	public async shutdown(code: VoiceConnectionShutdownCode): Promise<void> {
-		if (!this.#isReady) throw new Error('VoiceConnectionManager is not ready');
-		if (this.#isShutdown) return;
+		if (!this.isReady) throw new Error('VoiceConnectionManager is not ready');
+		if (this.isShutdown) return;
 
 		if (code !== VoiceConnectionShutdownCode.ProcessExit) {
 			if (process.env.PROCESS_ROLE === 'child') {
@@ -210,7 +210,7 @@ export class VoiceConnectionManager {
 		}
 
 		if (code === VoiceConnectionShutdownCode.Command) {
-			this.#isShutdown = true;
+			this.isShutdown = true;
 			return;
 		} else if (code === VoiceConnectionShutdownCode.ProcessExit) {
 			await this.channel.send(
@@ -230,15 +230,15 @@ export class VoiceConnectionManager {
 	}
 
 	public async addQueueText(text: string): Promise<boolean> {
-		if (!this.#isReady || this.#isShutdown) return false;
+		if (!this.isReady || this.isShutdown) return false;
 
 		let replacedText = text;
-		for (const [key, value] of Object.entries(this.#defaultDictionary.dictionaryData.data)) {
+		for (const [key, value] of Object.entries(this.defaultDictionary.data)) {
 			const regex = new RegExp(key, value.flags);
 			replacedText = replacedText.replace(regex, value.replace);
 		}
 
-		for (const [key, value] of Object.entries(this.#guildDictionary.dictionaryData.data)) {
+		for (const [key, value] of Object.entries(this.guildDictionary.data)) {
 			if (value.isRegExp) {
 				const regex = new RegExp(key, value.flags);
 				replacedText = replacedText.replace(regex, value.replace);
@@ -248,11 +248,11 @@ export class VoiceConnectionManager {
 		}
 
 		try {
-			if (!this.#textToSpeechClient) {
+			if (!this.textToSpeechClient) {
 				throw new Error('Google Cloud Text-to-Speech client is not initialized');
 			}
 
-			const [response] = await this.#textToSpeechClient.synthesizeSpeech({
+			const [response] = await this.textToSpeechClient.synthesizeSpeech({
 				input: {
 					text: replacedText,
 				},
@@ -269,10 +269,10 @@ export class VoiceConnectionManager {
 			if (!response.audioContent) throw new Error('No audio content received from Text-to-Speech API');
 			const stream = Readable.from([Buffer.from(response.audioContent)]);
 			const resource = createAudioResource(stream);
-			if (this.#audioPlayer.state.status === AudioPlayerStatus.Idle && this.#queue.length === 0) {
-				this.#audioPlayer.play(resource);
+			if (this.audioPlayer.state.status === AudioPlayerStatus.Idle && this.queue.length === 0) {
+				this.audioPlayer.play(resource);
 			} else {
-				this.#queue.push(resource);
+				this.queue.push(resource);
 			}
 
 			return true;
@@ -284,14 +284,14 @@ export class VoiceConnectionManager {
 	}
 
 	public skip(): void {
-		this.#audioPlayer.stop();
+		this.audioPlayer.stop();
 	}
 
 	public async reloadDictionary(): Promise<void> {
-		await this.#guildDictionary.load();
+		await this.guildDictionary.load();
 	}
 
 	public get audioPlayerStatus(): AudioPlayerStatus {
-		return this.#audioPlayer.state.status;
+		return this.audioPlayer.state.status;
 	}
 }

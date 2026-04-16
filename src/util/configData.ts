@@ -28,10 +28,10 @@ export const ConfigDataSchema = z.object({
 export type ConfigData = z.infer<typeof ConfigDataSchema>;
 
 export class Config {
-	#configData: ConfigData;
+	private configData: ConfigData;
 
 	public constructor() {
-		this.#configData = {
+		this.configData = {
 			announcement: null,
 			isMaintenance: false,
 			updateInfo: null,
@@ -62,14 +62,14 @@ export class Config {
 
 		const rawConfig = await readFile(configUrl, 'utf8');
 		try {
-			this.#configData = ConfigDataSchema.parse(JSON.parse(rawConfig));
+			this.configData = ConfigDataSchema.parse(JSON.parse(rawConfig));
 		} catch (error) {
 			logger.error(`Failed to parse config.json: ${error}`);
 		}
 	}
 
 	public get data(): ConfigData {
-		return this.#configData;
+		return this.configData;
 	}
 
 	public get version(): string {
@@ -77,18 +77,18 @@ export class Config {
 	}
 
 	public get isMaintenance(): boolean {
-		return this.#configData.isMaintenance;
+		return this.configData.isMaintenance;
 	}
 
 	public get announcement(): string {
-		return this.#configData.announcement ?? 'お知らせはありません';
+		return this.configData.announcement ?? 'お知らせはありません';
 	}
 
 	public get updateInfo(): string {
-		return this.#configData.updateInfo ?? 'アップデート情報はありません';
+		return this.configData.updateInfo ?? 'アップデート情報はありません';
 	}
 
 	public get maintenanceInfo(): string {
-		return this.#configData.maintenanceInfo ?? 'メンテナンス中のメッセージが設定されていません';
+		return this.configData.maintenanceInfo ?? 'メンテナンス中のメッセージが設定されていません';
 	}
 }

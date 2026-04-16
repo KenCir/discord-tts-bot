@@ -147,16 +147,16 @@ export default {
 		} else if (subCommand === 'list') {
 			const dictionary = new Dictionary(interaction.guildId);
 			await dictionary.load();
-			if (Object.keys(dictionary.dictionaryData.data).length === 0) {
+			if (Object.keys(dictionary.data).length === 0) {
 				await interaction.followUp('辞書に登録されている単語はありません');
 				return;
 			}
 
 			const embeds: EmbedBuilder[] = [];
 			let page = 1;
-			for (let index = 0; index < Object.keys(dictionary.dictionaryData.data).length; index += 10) {
+			for (let index = 0; index < Object.keys(dictionary.data).length; index += 10) {
 				const embed = new EmbedBuilder().setTitle(`単語帳 ${page++}ページ目`);
-				const entries = Object.entries(dictionary.dictionaryData.data).slice(index, index + 10);
+				const entries = Object.entries(dictionary.data).slice(index, index + 10);
 				for (const [word, info] of entries) {
 					embed.addFields({
 						name: word,

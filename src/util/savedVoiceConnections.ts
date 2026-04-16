@@ -8,10 +8,10 @@ export const SavedVoiceConnectionsSchema = z.array(z.string());
 export type SavedVoiceConnectionsData = z.infer<typeof SavedVoiceConnectionsSchema>;
 
 export class SavedVoiceConnections {
-	#voiceConnectionData: SavedVoiceConnectionsData;
+	private voiceConnectionData: SavedVoiceConnectionsData;
 
 	public constructor() {
-		this.#voiceConnectionData = [];
+		this.voiceConnectionData = [];
 	}
 
 	public async load(): Promise<void> {
@@ -24,7 +24,7 @@ export class SavedVoiceConnections {
 
 		const rawData = await readFile(new URL('../../data/voiceConnections.json', import.meta.url), 'utf8');
 		try {
-			this.#voiceConnectionData = SavedVoiceConnectionsSchema.parse(JSON.parse(rawData));
+			this.voiceConnectionData = SavedVoiceConnectionsSchema.parse(JSON.parse(rawData));
 		} catch (error) {
 			logger.error(`保存されたボイスチャンネルのデータの解析に失敗しました: ${error}`);
 		}
@@ -36,26 +36,26 @@ export class SavedVoiceConnections {
 
 		await writeFile(
 			new URL('../../data/voiceConnections.json', import.meta.url),
-			JSON.stringify(this.#voiceConnectionData),
+			JSON.stringify(this.voiceConnectionData),
 			'utf8',
 		);
 	}
 
 	public add(channelId: string): void {
-		if (!this.#voiceConnectionData.includes(channelId)) {
-			this.#voiceConnectionData.push(channelId);
+		if (!this.voiceConnectionData.includes(channelId)) {
+			this.voiceConnectionData.push(channelId);
 		}
 	}
 
 	public remove(channelId: string): void {
-		this.#voiceConnectionData = this.#voiceConnectionData.filter((id) => id !== channelId);
+		this.voiceConnectionData = this.voiceConnectionData.filter((id) => id !== channelId);
 	}
 
 	public clear(): void {
-		this.#voiceConnectionData = [];
+		this.voiceConnectionData = [];
 	}
 
 	public get data(): string[] {
-		return this.#voiceConnectionData;
+		return this.voiceConnectionData;
 	}
 }
