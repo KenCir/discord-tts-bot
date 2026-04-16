@@ -154,9 +154,9 @@ export default {
 
 			const embeds: EmbedBuilder[] = [];
 			let page = 1;
-			for (let index = 0; index < Object.keys(dictionary.data.data).length; index += 10) {
+			for (let index = 0; index < Object.keys(dictionary.data).length; index += 10) {
 				const embed = new EmbedBuilder().setTitle(`単語帳 ${page++}ページ目`);
-				const entries = Object.entries(dictionary.data.data).slice(index, index + 10);
+				const entries = Object.entries(dictionary.data).slice(index, index + 10);
 				for (const [word, info] of entries) {
 					embed.addFields({
 						name: word,

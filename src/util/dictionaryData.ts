@@ -79,7 +79,7 @@ export class Dictionary {
 		return true;
 	}
 
-	public get data(): DictionaryData {
-		return this.dictionaryData;
+	public get data(): DictionaryData['data'] {
+		return this.dictionaryData.data;
 	}
 }
