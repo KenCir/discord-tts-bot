@@ -147,7 +147,7 @@ export default {
 		} else if (subCommand === 'list') {
 			const dictionary = new Dictionary(interaction.guildId);
 			await dictionary.load();
-			if (Object.keys(dictionary.data.data).length === 0) {
+			if (Object.keys(dictionary.data).length === 0) {
 				await interaction.followUp('辞書に登録されている単語はありません');
 				return;
 			}
