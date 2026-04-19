@@ -16,6 +16,11 @@
 			"groupSlug": "npm-patch"
 		},
 		{
+			"matchManagers": ["npm"],
+			"matchDepTypes": ["engines"],
+			"enabled": false
+		},
+		{
 			"matchManagers": ["github-actions"],
 			"addLabels": ["github_actions"]
 		},
