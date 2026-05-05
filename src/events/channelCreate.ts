@@ -45,6 +45,7 @@ export default {
 				if (!existingVoiceConnection) {
 					const voiceConnection = new VoiceConnectionManager(channel);
 					await voiceConnection.joinChannel();
+					channel.client.savedVoiceConnections.add(channel.id);
 					return;
 				}
 
@@ -57,6 +58,7 @@ export default {
 					const result = await waitIPCResult(childClient, 'joinResult', channel.id);
 
 					if (result.code === JoinResultCode.Success) {
+						channel.client.savedVoiceConnections.add(channel.id);
 						return;
 					} else if (result.code === JoinResultCode.AlreadyConnected)
 						continue; // 別のチャンネルで読み上げを行なっているなら別の子機で試す
