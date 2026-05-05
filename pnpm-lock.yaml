@@ -18,14 +18,14 @@ importers:
         specifier: ^0.19.2
         version: 0.19.2(@discordjs/opus@0.10.0)(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(bufferutil@4.1.0)
       '@google-cloud/text-to-speech':
-        specifier: ^6.4.0
-        version: 6.4.0
+        specifier: ^6.4.1
+        version: 6.4.1
       bufferutil:
         specifier: ^4.1.0
         version: 4.1.0
       discord.js:
-        specifier: ^14.26.3
-        version: 14.26.3(bufferutil@4.1.0)
+        specifier: ^14.26.4
+        version: 14.26.4(bufferutil@4.1.0)
       google-auth-library:
         specifier: ^10.6.2
         version: 10.6.2
@@ -281,8 +281,8 @@ packages:
     resolution: {integrity: sha512-rZAP3aVgB9ds9KOeUSL+zZ21hPmo8dh6fnIFwRQj5EAZl9gzR7wxYbYXYysAM8CTqGmUGyp2S4kUdV17MnGuWQ==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@google-cloud/text-to-speech@6.4.0':
-    resolution: {integrity: sha512-KUnK+mBYz9aegxHrBbwEignOkGRqXvqOXs/EGY7CAJhMFKuNSieW02/PV/ipVRsJM11MP69qgTgEetoyAN0HAg==}
+  '@google-cloud/text-to-speech@6.4.1':
+    resolution: {integrity: sha512-iF1SpBPbP019zoLYzIJXp/yDumrSNl19T7hXP4Lg8d2cnNtxoQKQuNOpiwFrxEKV3CBJpp7OY5+z7/K73zNr5w==}
     engines: {node: '>=18'}
 
   '@grpc/grpc-js@1.14.3':
@@ -1268,8 +1268,8 @@ packages:
   discord-api-types@0.38.45:
     resolution: {integrity: sha512-DiI01i00FPv6n+hXcFkFxK8Y/rFRpKs6U6aP32N4T73nTbj37Eua3H/95TBpLktLWB6xnLXhYDGvyLq6zzYY2w==}
 
-  discord.js@14.26.3:
-    resolution: {integrity: sha512-XEKtYn28YFsiJ5l4fLRyikdbo6RD5oFyqfVHQlvXz2104JhH/E8slN28dbky05w3DCrJcNVWvhVvcJCTSl/KIg==}
+  discord.js@14.26.4:
+    resolution: {integrity: sha512-4oBp8tc6Kf8IDBwAHhbsMaAqx1b5fob9SNasZT7V6yyyUydoO5i5fGuX7TmvRtR+q/WgKRnRViRoAWnG7fNyvA==}
     engines: {node: '>=18'}
 
   doctrine@2.1.0:
@@ -3686,7 +3686,7 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@google-cloud/text-to-speech@6.4.0':
+  '@google-cloud/text-to-speech@6.4.1':
     dependencies:
       google-gax: 5.0.6
     transitivePeerDependencies:
@@ -4671,7 +4671,7 @@ snapshots:
 
   discord-api-types@0.38.45: {}
 
-  discord.js@14.26.3(bufferutil@4.1.0):
+  discord.js@14.26.4(bufferutil@4.1.0):
     dependencies:
       '@discordjs/builders': 1.14.1
       '@discordjs/collection': 1.5.3
