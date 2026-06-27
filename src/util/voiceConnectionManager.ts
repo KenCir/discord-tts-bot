@@ -198,6 +198,8 @@ export class VoiceConnectionManager {
 		if (!this.isReady) throw new Error('VoiceConnectionManager is not ready');
 		if (this.isShutdown) return;
 
+		this.isShutdown = true;
+
 		if (code !== VoiceConnectionShutdownCode.ProcessExit) {
 			if (process.env.PROCESS_ROLE === 'child') {
 				process.send?.({
@@ -210,7 +212,6 @@ export class VoiceConnectionManager {
 		}
 
 		if (code === VoiceConnectionShutdownCode.Command) {
-			this.isShutdown = true;
 			return;
 		} else if (code === VoiceConnectionShutdownCode.ProcessExit) {
 			await this.channel.send(
@@ -219,7 +220,11 @@ export class VoiceConnectionManager {
 		} else if (code === VoiceConnectionShutdownCode.ForcedDisconnect) {
 			await this.channel.send('VCから強制切断されたため、読み上げを終了しました');
 		} else if (code === VoiceConnectionShutdownCode.AllMembersDisconnected) {
-			await this.channel.send('VCに誰もいないため、読み上げを終了しました');
+			try {
+				await this.channel.send('VCに誰もいないため、読み上げを終了しました');
+			} catch {
+				// 暫定処理
+			}
 		} else if (code === VoiceConnectionShutdownCode.RateLimited) {
 			await this.channel.send(
 				'レート制限を超過したため、読み上げを終了しました\n再接続を行う場合は、しばらく時間を空けてからコマンドを実行してください',
