@@ -21,7 +21,7 @@
 		"@google-cloud/text-to-speech": "^6.4.1",
 		"bufferutil": "^4.1.0",
 		"discord.js": "^14.26.4",
-		"google-auth-library": "^10.6.2",
+		"google-auth-library": "^10.9.1",
 		"pino": "^10.3.1",
 		"zlib-sync": "^0.1.10",
 		"zod": "^4.4.3"
